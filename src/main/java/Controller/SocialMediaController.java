@@ -19,6 +19,12 @@ import java.util.List;
 public class SocialMediaController {
     MessageService messageService;
     AccountService accountService;
+
+    public SocialMediaController (){
+        this.messageService = new MessageService();
+        this.accountService = new AccountService();
+    }
+
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
@@ -43,7 +49,7 @@ public class SocialMediaController {
                 ctx.json(mapper.writeValueAsString(addedMessage));
                 ctx.status(200);
             }else{
-                ctx.status(401);
+                ctx.status(400);
             }
     }
     // private void postAuthorHandler(Context ctx) throws JsonProcessingException {
