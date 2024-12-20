@@ -34,8 +34,8 @@ public class SocialMediaController {
         Javalin app = Javalin.create();
         app.post("/messages", this::postMessage);
         app.get("/messages", this::getAllMessages);
+        app.get("/messages/{id}", this::getMessage);
         app.delete("messages/{messageId}", this::deleteMessage);
-        // ("http://localhost:8080/accounts/1/messages"))
         app.get("/accounts/{accountId}/messages", this::getAllMessagesByAccountId);
 
         return app;
@@ -60,6 +60,16 @@ public class SocialMediaController {
     private void getAllMessages(Context ctx) throws JsonProcessingException {
         List<Message> messages = messageService.getAllMessages();
         ctx.json(messages);
+    }
+
+    private void getMessage(Context ctx) throws JsonProcessingException {
+        int id = Integer.parseInt(ctx.pathParam("id"));
+        Message message = messageService.getMessage(id);
+        if (message != null) {
+            ctx.json(message);
+        } else {
+            ctx.status(200);
+        }
     }
 
     private void getAllMessagesByAccountId(Context ctx) throws JsonProcessingException {
