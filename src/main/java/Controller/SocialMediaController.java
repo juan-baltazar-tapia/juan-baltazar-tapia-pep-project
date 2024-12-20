@@ -35,6 +35,8 @@ public class SocialMediaController {
         app.post("/messages", this::postMessage);
         app.get("/messages", this::getAllMessages);
         app.delete("messages/{messageId}", this::deleteMessage);
+        // ("http://localhost:8080/accounts/1/messages"))
+        app.get("/accounts/{accountId}/messages", this::getAllMessagesByAccountId);
 
         return app;
     }
@@ -57,6 +59,12 @@ public class SocialMediaController {
 
     private void getAllMessages(Context ctx) throws JsonProcessingException {
         List<Message> messages = messageService.getAllMessages();
+        ctx.json(messages);
+    }
+
+    private void getAllMessagesByAccountId(Context ctx) throws JsonProcessingException {
+        int accountId = Integer.parseInt(ctx.pathParam("accountId"));
+        List<Message> messages = messageService.getAllMessagesByAccountId(accountId);
         ctx.json(messages);
     }
 
