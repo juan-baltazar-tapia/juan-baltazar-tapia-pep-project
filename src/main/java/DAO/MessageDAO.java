@@ -57,22 +57,74 @@ public class MessageDAO {
         return messages;
     }
 
-//     public List<Author> getAllAuthors(){
-//         Connection connection = ConnectionUtil.getConnection();
-//         List<Author> authors = new ArrayList<>();
-//         try {
-//             //Write SQL logic here
-//             String sql = "SELECT * FROM author";
-//             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-//             ResultSet rs = preparedStatement.executeQuery();
-//             while(rs.next()){
-//                 Author author = new Author(rs.getInt("id"), rs.getString("name"));
-//                 authors.add(author);
-//             }
-//         }catch(SQLException e){
-//             System.out.println(e.getMessage());
-//         }
-//         return authors;
-//     }
-// }
+    public Message deleteMessage(int messageId) {
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "SELECT * FROM MESSAGE WHERE message_id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setInt(1, messageId);
+            ResultSet rs = preparedStatement.executeQuery();
+            
+            if(!rs.next()) {
+                return null;
+            }
+
+            Message deletedMessage = new Message(
+                rs.getInt("message_id"),
+                rs.getInt("posted_by"),
+                rs.getString("message_text"),
+                rs.getLong("time_posted_epoch"));
+
+            String deleteSql = "DELETE FROM MESSAGE WHERE message_id = ?";
+            PreparedStatement deleteStatement = connection.prepareStatement(deleteSql, Statement.RETURN_GENERATED_KEYS);
+            deleteStatement.setInt(1, messageId);
+
+            deleteStatement.executeUpdate();
+
+            return deletedMessage;
+
+            
+
+        } catch (SQLException e) {
+            System.out.print(e.getMessage());
+        }
+        return null;
+    }
 }
+
+// app.delete("/messages/:id", ctx -> {
+//     int messageId = ctx.pathParam("id", Integer.class);
+    
+//     try (Connection conn = dataSource.getConnection()) {
+//         // First get the message
+//         String selectSql = "SELECT * FROM messages WHERE messageId = ?";
+//         PreparedStatement selectStmt = conn.prepareStatement(selectSql);
+//         selectStmt.setInt(1, messageId);
+//         ResultSet rs = selectStmt.executeQuery();
+        
+//         if (!rs.next()) {
+//             ctx.status(404).result("Message not found");
+//             return;
+//         }
+        
+//         // Store message details before deletion
+//         Message deletedMessage = new Message(
+//             rs.getInt("messageId"),
+//             rs.getString("content"),
+//             // ... other fields you need
+//         );
+        
+//         // Then delete it
+//         String deleteSql = "DELETE FROM messages WHERE messageId = ?";
+//         PreparedStatement deleteStmt = conn.prepareStatement(deleteSql);
+//         deleteStmt.setInt(1, messageId);
+//         deleteStmt.executeUpdate();
+        
+//         // Return the deleted message
+//         ctx.json(deletedMessage);
+//         ctx.status(200);
+        
+//     } catch (SQLException e) {
+//         ctx.status(500).result("Error deleting message");
+//     }
+// });

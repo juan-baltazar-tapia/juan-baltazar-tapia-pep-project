@@ -30,6 +30,10 @@ public class MessageService {
    public List<Message> getAllMessages() {
     return MessageDAO.getAllMessages();
    }
+
+   public Message deleteMessageById(int messageId) {
+    return MessageDAO.deleteMessage(messageId);
+   }
  
 }
 

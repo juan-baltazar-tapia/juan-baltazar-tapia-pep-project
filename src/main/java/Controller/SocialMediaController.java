@@ -34,6 +34,7 @@ public class SocialMediaController {
         Javalin app = Javalin.create();
         app.post("/messages", this::postMessage);
         app.get("/messages", this::getAllMessages);
+        app.delete("messages/{messageId}", this::deleteMessage);
 
         return app;
     }
@@ -57,6 +58,17 @@ public class SocialMediaController {
     private void getAllMessages(Context ctx) throws JsonProcessingException {
         List<Message> messages = messageService.getAllMessages();
         ctx.json(messages);
+    }
+
+    private void deleteMessage(Context ctx) throws JsonProcessingException {
+        int messageId = Integer.parseInt(ctx.pathParam("messageId"));
+        Message deletedMessage = messageService.deleteMessageById(messageId);
+        if (deletedMessage != null) {
+            ctx.json(deletedMessage);
+            ctx.status(200);
+        } else {
+            ctx.status(200);
+        }
     }
 
 }
