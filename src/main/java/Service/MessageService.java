@@ -20,12 +20,15 @@ public class MessageService {
     * @param MessageDAO
     */
    public MessageService(MessageDAO MessageDAO){
-       this.MessageDAO = MessageDAO;
+    this.MessageDAO = MessageDAO;
    }
   
    public Message addMessage(Message message) {
+    return MessageDAO.insertMessage(message);
+   }
 
-       return MessageDAO.insertMessage(message);
+   public List<Message> getAllMessages() {
+    return MessageDAO.getAllMessages();
    }
  
 }

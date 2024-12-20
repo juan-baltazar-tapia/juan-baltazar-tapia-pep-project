@@ -33,6 +33,7 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.post("/messages", this::postMessage);
+        app.get("/messages", this::getAllMessages);
 
         return app;
     }
@@ -52,16 +53,10 @@ public class SocialMediaController {
                 ctx.status(400);
             }
     }
-    // private void postAuthorHandler(Context ctx) throws JsonProcessingException {
-    //     ObjectMapper mapper = new ObjectMapper();
-    //     Author author = mapper.readValue(ctx.body(), Author.class);
-    //     Author addedAuthor = authorService.addAuthor(author);
-    //     if(addedAuthor!=null){
-    //         ctx.json(mapper.writeValueAsString(addedAuthor));
-    //     }else{
-    //         ctx.status(400);
-    //     }
-    // }
 
+    private void getAllMessages(Context ctx) throws JsonProcessingException {
+        List<Message> messages = messageService.getAllMessages();
+        ctx.json(messages);
+    }
 
 }
