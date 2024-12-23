@@ -38,6 +38,9 @@ public class SocialMediaController {
         app.delete("messages/{messageId}", this::deleteMessage);
         app.get("/accounts/{accountId}/messages", this::getAllMessagesByAccountId);
         app.patch("/messages/{id}", this::updateMessage);
+        app.post("/login", this::login);
+        //POST localhost:8080/register
+        app.post("/register", this::register);
 
         return app;
     }
@@ -46,6 +49,32 @@ public class SocialMediaController {
      * This is an example handler for an example endpoint.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
      */
+
+    private void login(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Account accountInfo = mapper.readValue(ctx.body(), Account.class);
+        Account result = accountService.login(accountInfo);
+        if (result != null) {
+            ctx.json(mapper.writeValueAsString(result));
+            ctx.status(200);
+        } else {
+            ctx.status(401);
+        }
+    }
+
+    private void register(Context ctx) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Account accountInfo = mapper.readValue(ctx.body(), Account.class);
+        Account result = accountService.register(accountInfo);
+        if (result != null) {
+            ctx.json(mapper.writeValueAsString(result));
+            ctx.status(200);
+        } else {
+            ctx.status(400);
+        }
+
+    }
+
     private void postMessage(Context ctx) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(ctx.body(), Message.class);

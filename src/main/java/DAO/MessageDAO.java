@@ -160,7 +160,6 @@ public class MessageDAO {
             return deletedMessage;
 
             
-
         } catch (SQLException e) {
             System.out.print(e.getMessage());
         }
